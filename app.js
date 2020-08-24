@@ -22,6 +22,15 @@ app.get('/pipedriver', function (req, res, next) {
     });
 });
 
+app.post('/pipedriver', function (req, res, next) {
+  let deal = req.body.current;
+  if (deal.status !== 'won') {
+    console.log('Deal was updated but its not won yet');
+  } else {
+    console.log('The deal is won!');
+  }
+  res.status(200).send('ok');
+});
 app.set('port', process.env.PORT || 3000);
 
 module.exports = app;
