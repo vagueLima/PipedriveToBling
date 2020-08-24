@@ -1,7 +1,7 @@
 const assert = require('assert').strict;
 const supertest = require('supertest');
-const app = require('../app');
 require('dotenv').config({ path: '../.env' });
+const app = require('../app');
 
 describe('Tests for pipedriver and Bling integration', function () {
   it('gets only won deals', function (done) {
