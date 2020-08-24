@@ -1,8 +1,8 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const axios = require('axios');
-require('dotenv').config();
 const app = express();
 
 mongoose.set('useCreateIndex', true);
@@ -24,7 +24,7 @@ app.get('/pipedriver', function (req, res, next) {
       res.status(200).json({ deals: onlyWonDeals });
     })
     .catch((err) => {
-      res.status(500).json({ error: 'Couldnt conenct to pipedriver api' });
+      res.status(500).json({ error: 'Couldnt connect to pipedriver api' });
     });
 });
 app.set('port', process.env.PORT || 3000);
