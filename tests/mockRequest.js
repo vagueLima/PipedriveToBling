@@ -27,7 +27,7 @@ function mockDealUpdate() {
       org_id: 2,
       stage_id: 5,
       title: 'Novo Item',
-      value: Math.floor(Math.random() * 500000000),
+      value: Math.floor(Math.random() * 10000000),
       currency: 'BRL',
       add_time: '2020-08-24 21:42:32',
       update_time: new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),

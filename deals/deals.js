@@ -26,7 +26,9 @@ function jsonToXML(jsonPayload) {
   payloadToBlingXML
     .ele('pedido')
     .ele('cliente')
+    .ele('nome')
     .txt(jsonPayload.pedido.cliente.nome)
+    .up()
     .up()
     .ele('itens')
     .ele('item')

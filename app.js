@@ -4,8 +4,17 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const app = express();
 const router = require('./api/router');
+
+const MONGO_PASSWORD = process.env.MONGO_PASSWORD;
+const MONGO_DATABASE = process.env.MONGO_DATABASE;
+
+const MONGO_URL = process.env.MONGO_URL.replace('<password>', MONGO_PASSWORD).replace(
+  '<dbname>',
+  MONGO_DATABASE
+);
+console.log(MONGO_URL);
 mongoose.set('useCreateIndex', true);
-mongoose.connect('mongodb://localhost:27017/PipedriveToBling', {
+mongoose.connect(MONGO_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
