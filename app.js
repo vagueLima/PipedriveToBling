@@ -31,7 +31,7 @@ app.post('/pipedriver', function (req, res, next) {
     console.log('Deal was updated but its not won yet');
     res.status(200);
   } else {
-    console.log('The dealPipedrive is won!');
+    console.log('The deal is won!');
     const payloadToBlingJson = {
       pedido: {
         itens: [
@@ -59,6 +59,19 @@ app.post('/pipedriver', function (req, res, next) {
         res.status(500).send('Error sendind data to Bling');
       });
   }
+});
+app.get('', function (req, res, next) {
+  Oportunidade.aggregate([
+    {
+      $group: {
+        _id: { day: { $dayOfYear: '$createdAt' }, year: { $year: '$createdAt' } },
+        totalAmount: { $sum: '$value' },
+        count: { $sum: 1 },
+      },
+    },
+  ]).then((oportunidades) => {
+    res.status(200).json({ oportunidades });
+  });
 });
 app.set('port', process.env.PORT || 3000);
 
