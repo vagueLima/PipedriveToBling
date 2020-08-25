@@ -8,6 +8,7 @@ const { getDeals } = require('./deals.js');
 const builder = require('xmlbuilder');
 const axios = require('axios');
 const { default: Axios } = require('axios');
+const { json } = require('body-parser');
 mongoose.set('useCreateIndex', true);
 mongoose.connect('mongodb://localhost:27017/PipedriveToBling', {
   useNewUrlParser: true,
@@ -36,12 +37,28 @@ app.post('/pipedriver', function (req, res, next) {
   } else {
     console.log('The deal is won!');
     const payloadToBlingJson = {
-      pedido: { cliente: { nome: deal.person_name } },
+      pedido: {
+        itens: [{ descricao: deal.title, vlr_unit: deal.value, codigo: deal.id }],
+        cliente: { nome: deal.person_name },
+      },
     };
     let payloadToBlingXML = builder.create('root');
-    payloadToBlingXML.ele('pedido').ele('cliente').txt(payloadToBlingJson.pedido.cliente.nome);
-    //const config = { headers: { 'Content-Type': 'text/xml' } };
-
+    payloadToBlingXML
+      .ele('pedido')
+      .ele('cliente')
+      .txt(payloadToBlingJson.pedido.cliente.nome)
+      .up()
+      .ele('itens')
+      .ele('item')
+      .ele('descricao')
+      .txt(payloadToBlingJson.pedido.itens[0].descricao)
+      .up()
+      .ele('vlr_unit')
+      .txt(payloadToBlingJson.pedido.itens[0].vlr_unit)
+      .up()
+      .ele('codigo')
+      .txt(payloadToBlingJson.pedido.itens[0].codigo);
+    console.log(payloadToBlingXML.toString({ pretty: true }));
     const data = { xml: payloadToBlingXML.toString(), apikey: BLING_TOKEN };
     const options = {
       method: 'POST',
@@ -51,6 +68,7 @@ app.post('/pipedriver', function (req, res, next) {
     };
     axios(options)
       .then((resBling) => {
+        console.log(JSON.stringify(resBling.data));
         res.status(200).send('ok');
       })
       .catch((err) => res.status(500));
