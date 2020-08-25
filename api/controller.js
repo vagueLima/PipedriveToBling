@@ -52,7 +52,11 @@ function AggregateOportunidadesByDayAndValue(req, res, next) {
   Oportunidade.aggregate([
     {
       $group: {
-        _id: { day: { $dayOfYear: '$createdAt' }, year: { $year: '$createdAt' } },
+        _id: {
+          day: { $dayOfMonth: '$createdAt' },
+          month: { $month: '$createdAt' },
+          year: { $year: '$createdAt' },
+        },
         totalAmount: { $sum: '$value' },
         count: { $sum: 1 },
       },
