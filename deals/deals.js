@@ -6,6 +6,10 @@ const BLING_TOKEN = process.env.BLING_TOKEN;
 const builder = require('xmlbuilder');
 const qs = require('qs');
 
+if (!PIPEDRIVER_TOKEN || !PIPEDRIVER_API_URL || !BLING_API_URL || !BLING_TOKEN) {
+  console.error('One of the environment variables is missing. Please check README.');
+  process.exit(1);
+}
 async function getDealsFromPipedrive(filterFunction = null) {
   let responseFromPipeDriver = await axios.get(`${PIPEDRIVER_API_URL}/deals`, {
     params: { api_token: PIPEDRIVER_TOKEN },

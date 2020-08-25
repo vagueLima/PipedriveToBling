@@ -18,7 +18,7 @@ describe('Tests for pipedriver and Bling integration', function () {
         done();
       });
   });
-  it('gets only won deals', function (done) {
+  it('Mocks a webhook call from Pipedrive', function (done) {
     supertest(app)
       .post('/deals')
       .send({ ...mockDealUpdate() })

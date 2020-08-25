@@ -1,4 +1,4 @@
-const { getDealsFromPipedrive, uploadDealToBling } = require('../deals.js');
+const { getDealsFromPipedrive, uploadDealToBling } = require('../deals/deals.js');
 const Oportunidade = require('../models/oportunidade');
 
 function getDealsByStatus(req, res) {
