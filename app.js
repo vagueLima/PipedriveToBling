@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const app = express();
 const router = require('./api/router');
-
+const morgan = require('morgan');
 const MONGO_PASSWORD = process.env.MONGO_PASSWORD;
 const MONGO_DATABASE = process.env.MONGO_DATABASE;
 
@@ -19,6 +19,7 @@ mongoose.connect(MONGO_URL, {
   useUnifiedTopology: true,
 });
 
+app.use(morgan('tiny'));
 app.use(bodyParser.json());
 app.use(router);
 app.set('port', process.env.PORT || 3000);
