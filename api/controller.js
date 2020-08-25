@@ -10,7 +10,7 @@ function getDealsByStatus(req, res) {
       res.status(200).json({ deals: onlyWonDeals });
     })
     .catch((err) => {
-      res.status(500).json({ error: 'Couldnt connect to pipedriver api' });
+      res.status(500).json({ error: 'Couldnt connect to pipedrive api' });
     });
 }
 
