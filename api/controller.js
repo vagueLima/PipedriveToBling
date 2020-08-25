@@ -3,7 +3,9 @@ const Oportunidade = require('../models/oportunidade');
 
 function getDealsByStatus(req, res) {
   const status = req.params.status;
-  getDealsFromPipedrive((dealPipedrive) => dealPipedrive.status == status)
+  //if there is a status filter by it, if not return all deals
+  const filterFunction = status ? (dealPipedrive) => dealPipedrive.status == status : null;
+  getDealsFromPipedrive(filterFunction)
     .then((onlyWonDeals) => {
       res.status(200).json({ deals: onlyWonDeals });
     })

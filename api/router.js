@@ -6,6 +6,7 @@ const {
   AggregateOportunidadesByDayAndValue,
 } = require('./controller');
 
+router.get('/deals', getDealsByStatus);
 router.get('/deals/:status', getDealsByStatus);
 router.post('/deals', processPipedriveDealIntoBlingOportunidade);
 router.get('/oportunidades', AggregateOportunidadesByDayAndValue);
