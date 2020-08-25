@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const app = express();
 const { getDeals, uploadDealToBling } = require('./deals.js');
+const Oportunidade = require('./models/oportunidade');
 
 mongoose.set('useCreateIndex', true);
 mongoose.connect('mongodb://localhost:27017/PipedriveToBling', {
@@ -14,7 +15,7 @@ mongoose.connect('mongodb://localhost:27017/PipedriveToBling', {
 app.use(bodyParser.json());
 
 app.get('/pipedriver', function (req, res, next) {
-  getDeals((deal) => deal.status == 'won')
+  getDeals((dealPipedrive) => dealPipedrive.status == 'won')
     .then((onlyWonDeals) => {
       res.status(200).json({ deals: onlyWonDeals });
     })
@@ -24,22 +25,39 @@ app.get('/pipedriver', function (req, res, next) {
 });
 
 app.post('/pipedriver', function (req, res, next) {
-  let deal = req.body.current;
+  let dealPipedrive = req.body.current;
 
-  if (deal.status !== 'won') {
+  if (dealPipedrive.status !== 'won') {
     console.log('Deal was updated but its not won yet');
     res.status(200);
   } else {
-    console.log('The deal is won!');
+    console.log('The dealPipedrive is won!');
     const payloadToBlingJson = {
       pedido: {
-        itens: [{ descricao: deal.title, vlr_unit: deal.value, codigo: deal.id }],
-        cliente: { nome: deal.person_name },
+        itens: [
+          {
+            descricao: dealPipedrive.title,
+            vlr_unit: dealPipedrive.value,
+            codigo: dealPipedrive.id,
+          },
+        ],
+        cliente: { nome: dealPipedrive.person_name },
       },
     };
     uploadDealToBling(payloadToBlingJson)
-      .then((responseFromBling) => res.status(200).send('ok'))
-      .catch((responseFromBlingError) => res.status(500).send('Error sendind data to Bling'));
+      .then((pedidoBling) => {
+        const newOportunidade = new Oportunidade({
+          id_pipedrive: dealPipedrive.id,
+          id_bling: pedidoBling.numero,
+          value: dealPipedrive.value,
+          currency: dealPipedrive.currency,
+        });
+        newOportunidade.save().then((savedOporunidade) => res.status(200).send('ok'));
+      })
+      .catch((responseFromBlingError) => {
+        console.log(responseFromBlingError);
+        res.status(500).send('Error sendind data to Bling');
+      });
   }
 });
 app.set('port', process.env.PORT || 3000);

@@ -48,7 +48,6 @@ async function uploadDealToBling(jsonPayload) {
   if (responseFromBling.data.retorno.erros) {
     throw responseFromBling;
   }
-  console.log(JSON.stringify(responseFromBling.data.retorno, null, 4));
-  return responseFromBling;
+  return responseFromBling.data.retorno.pedidos[0].pedido;
 }
 module.exports = { getDeals, uploadDealToBling };
