@@ -6,7 +6,7 @@ const BLING_TOKEN = process.env.BLING_TOKEN;
 const builder = require('xmlbuilder');
 const qs = require('qs');
 
-async function getDeals(filterFunction = null) {
+async function getDealsFromPipedrive(filterFunction = null) {
   let responseFromPipeDriver = await axios.get(`${PIPEDRIVER_API_URL}/deals`, {
     params: { api_token: PIPEDRIVER_TOKEN },
   });
@@ -50,4 +50,4 @@ async function uploadDealToBling(jsonPayload) {
   }
   return responseFromBling.data.retorno.pedidos[0].pedido;
 }
-module.exports = { getDeals, uploadDealToBling };
+module.exports = { getDealsFromPipedrive, uploadDealToBling };
