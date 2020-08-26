@@ -41,12 +41,25 @@ function processPipedriveDealIntoBlingOportunidade(req, res) {
           id_bling: pedidoBling.numero,
           value: dealPipedrive.value,
           currency: dealPipedrive.currency,
+          PIPEDRIVE_URL: PIPEDRIVER_API_URL,
         });
-        newOportunidade.save().then((savedOporunidade) => res.status(200).send('ok'));
+        newOportunidade
+          .save()
+          .then((savedOporunidade) => res.status(200).send('ok'))
+          .catch((err) => {
+            console.error('Problem saving in the database');
+            res.status(500).send('Problem saving in the database');
+          });
       })
-      .catch((responseFromBlingError) => {
-        console.log(responseFromBlingError);
-        res.status(500).send('Error sendind data to Bling');
+      .catch((err) => {
+        if (err.data && err.data.retorno.erro && err.data.retorno.erros[0].erro.cod === 30) {
+          //this is needed because if the webhook awnsers with 5xx, Pipedriver will keep re-trying
+          res.status(202).send('This deal is already in Bling');
+        } else if (err.data && err.data.retorno.erro) {
+          res.status(202).send('Unknown error in Bling');
+        } else {
+          res.status(202).send('Couldnt send data to Bling');
+        }
       });
   }
 }
