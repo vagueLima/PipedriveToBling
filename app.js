@@ -12,7 +12,6 @@ const MONGO_URL = process.env.MONGO_URL.replace('<password>', MONGO_PASSWORD).re
   '<dbname>',
   MONGO_DATABASE
 );
-console.log(MONGO_URL);
 mongoose.set('useCreateIndex', true);
 mongoose.connect(MONGO_URL, {
   useNewUrlParser: true,

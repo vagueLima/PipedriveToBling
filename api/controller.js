@@ -60,10 +60,17 @@ function AggregateOportunidadesByDayAndValue(req, res, next) {
           year: { $year: '$createdAt' },
         },
         totalAmount: { $sum: '$value' },
-        count: { $sum: 1 },
+        pedidos: { $sum: 1 },
       },
     },
   ]).then((oportunidades) => {
+    oportunidades = oportunidades.map((oportunidade) => {
+      return {
+        dia: `${oportunidade._id.day}-${oportunidade._id.month}-${oportunidade._id.year}`,
+        total: oportunidade.totalAmount,
+        pedidos: oportunidade.pedidos,
+      };
+    });
     res.status(200).json({ oportunidades });
   });
 }
