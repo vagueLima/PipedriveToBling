@@ -51,28 +51,32 @@ function processPipedriveDealIntoBlingOportunidade(req, res) {
 }
 
 function AggregateOportunidadesByDayAndValue(req, res, next) {
-  Oportunidade.aggregate([
-    {
-      $group: {
-        _id: {
-          day: { $dayOfMonth: '$createdAt' },
-          month: { $month: '$createdAt' },
-          year: { $year: '$createdAt' },
+  try {
+    Oportunidade.aggregate([
+      {
+        $group: {
+          _id: {
+            day: { $dayOfMonth: '$createdAt' },
+            month: { $month: '$createdAt' },
+            year: { $year: '$createdAt' },
+          },
+          totalAmount: { $sum: '$value' },
+          pedidos: { $sum: 1 },
         },
-        totalAmount: { $sum: '$value' },
-        pedidos: { $sum: 1 },
       },
-    },
-  ]).then((oportunidades) => {
-    oportunidades = oportunidades.map((oportunidade) => {
-      return {
-        dia: `${oportunidade._id.day}-${oportunidade._id.month}-${oportunidade._id.year}`,
-        total: oportunidade.totalAmount,
-        pedidos: oportunidade.pedidos,
-      };
+    ]).then((oportunidades) => {
+      oportunidades = oportunidades.map((oportunidade) => {
+        return {
+          dia: `${oportunidade._id.day}-${oportunidade._id.month}-${oportunidade._id.year}`,
+          total: oportunidade.totalAmount,
+          pedidos: oportunidade.pedidos,
+        };
+      });
+      res.status(200).json({ oportunidades });
     });
-    res.status(200).json({ oportunidades });
-  });
+  } catch (err) {
+    res.status(500).json({ error: 'Problem getting data from Database' });
+  }
 }
 module.exports = {
   getDealsByStatus,

@@ -6,13 +6,13 @@ It's possible to get data from the GET routes by running this project with npm s
 
 For the webhook to work, you need to add the URL to the API in your Pipedrive settings, using the event 'updated.deal' and setting it to /deal (I've used ngrok to run it locally).
 
-More info here [https://pipedrive.readme.io/docs/guide-for-webhooks](https://pipedrive.readme.io/docs/guide-for-webhooks)
+More info on how to set your webhook here [https://pipedrive.readme.io/docs/guide-for-webhooks](https://pipedrive.readme.io/docs/guide-for-webhooks)
 
 ## Routes
 
 ### GET /deals/:status
 
-Returns all deals in Pipedrive with the status passed.
+Returns deals from Pipedriver.
 
 Example :
 
@@ -27,3 +27,14 @@ Every change to a deal in Pipedrive triggers a call to this route. When a deal s
 ### GET /oportunidades
 
 This route groups the opportunities in the Database by day and value, and returns in an array.
+
+## Tests
+
+There are 3 simple tests implemented right now, covering all 3 implemented routes.
+The first one gets data from Pipedrive, useful to see if the URL and the tokens are correctly set.
+The second one Mocks a webhook call from Pipedrive, using the same body from the original request but using some random values in some parameters.
+The last one gets all Opportunities from the database.
+
+To run them:
+
+    npm run test
