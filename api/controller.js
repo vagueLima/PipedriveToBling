@@ -1,5 +1,6 @@
 const { getDealsFromPipedrive, uploadDealToBling } = require('../deals/deals.js');
 const Oportunidade = require('../models/oportunidade');
+const PIPEDRIVER_API_URL = process.env.PIPEDRIVER_API_URL;
 
 function getDealsByStatus(req, res) {
   const status = req.params.status;
@@ -53,6 +54,7 @@ function processPipedriveDealIntoBlingOportunidade(req, res) {
 function AggregateOportunidadesByDayAndValue(req, res, next) {
   try {
     Oportunidade.aggregate([
+      { $match: { PIPEDRIVE_URL: PIPEDRIVER_API_URL } },
       {
         $group: {
           _id: {

@@ -7,6 +7,7 @@ let oportunidadeSchema = Schema({
   createdAt: { type: Date, default: Date.now },
   value: { type: Number, required: true },
   currency: { type: String },
+  PIPEDRIVE_URL: { type: String },
 });
 
 var Oportunidade = mongoose.model('Oportunidades', oportunidadeSchema);
