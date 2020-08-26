@@ -18,10 +18,8 @@ function getDealsByStatus(req, res) {
 function processPipedriveDealIntoBlingOportunidade(req, res) {
   let dealPipedrive = req.body.current;
   if (dealPipedrive.status !== 'won') {
-    console.log('Deal was updated but its not won yet');
-    res.status(200);
+    res.status(200).send("'Deal was updated but its not won yet'");
   } else {
-    console.log('The deal is won!');
     const payloadToBlingJson = {
       pedido: {
         itens: [
@@ -47,8 +45,7 @@ function processPipedriveDealIntoBlingOportunidade(req, res) {
           .save()
           .then((savedOporunidade) => res.status(200).send('ok'))
           .catch((err) => {
-            console.error('Problem saving in the database');
-            res.status(500).send('Problem saving in the database');
+            res.status(500).send('Problem saving oportunidade in the database');
           });
       })
       .catch((err) => {
@@ -63,7 +60,12 @@ function processPipedriveDealIntoBlingOportunidade(req, res) {
       });
   }
 }
+function sortByDate(oportunidade1, oportunidade2) {
+  if (oportunidade1.dia > oportunidade2.dia) return -1;
+  if (oportunidade1.dia > oportunidade2.dia) return 1;
 
+  return 0;
+}
 function AggregateOportunidadesByDayAndValue(req, res, next) {
   try {
     Oportunidade.aggregate([
@@ -80,13 +82,17 @@ function AggregateOportunidadesByDayAndValue(req, res, next) {
         },
       },
     ]).then((oportunidades) => {
-      oportunidades = oportunidades.map((oportunidade) => {
-        return {
-          dia: `${oportunidade._id.day}-${oportunidade._id.month}-${oportunidade._id.year}`,
-          total: oportunidade.totalAmount,
-          pedidos: oportunidade.pedidos,
-        };
-      });
+      oportunidades = oportunidades
+        .map((oportunidade) => {
+          return {
+            dia: new Date(
+              `${oportunidade._id.month}/${oportunidade._id.day}/${oportunidade._id.year}`
+            ),
+            total: oportunidade.totalAmount,
+            pedidos: oportunidade.pedidos,
+          };
+        })
+        .sort(sortByDate);
       res.status(200).json({ oportunidades });
     });
   } catch (err) {
